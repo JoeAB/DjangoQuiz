@@ -1,10 +1,7 @@
-from django.shortcuts import render
-
-# Create your views here.
-
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
+from django.utils import timezone
 from django.views import generic
 
 from .models import Choice, Question
@@ -14,11 +11,16 @@ class IndexView(generic.ListView):
 	context_object_name = 'latest_question_list'
 	
 	def get_queryset(self):
-		return Question.objects.order_by('-publish_date')[:5]
+		#get five most recent, but none in the future
+		return Question.objects.filter(publish_date__lte=timezone.now()).order_by('-publish_date')[:5]
     
 class DetailView(generic.DetailView):
 	model = Question
 	template_name = 'polls/detail.html'
+	
+	def get_queryset(self):
+		#don't allow future questions here
+		return Question.objects.filter(publish_date__lte=timezone.now())
 		
 def vote(request, question_id):
 	question = get_object_or_404(Question, pk=question_id)
