@@ -4,10 +4,17 @@ from django.urls import reverse
 from django.utils import timezone
 from django.views import generic
 
-from .models import Choice, Question
+from .models import Category, Choice, Question
 
 class IndexView(generic.ListView):
 	template_name = 'polls/index.html'
+	context_object_name = 'category_list'
+	
+	def get_queryset(self):
+		return Category.objects.order_by('category_name')
+
+class QuestionListView(generic.ListView):
+	template_name = 'polls/questionList.html'
 	context_object_name = 'latest_question_list'
 	
 	def get_queryset(self):

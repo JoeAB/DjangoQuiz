@@ -3,10 +3,17 @@ import datetime
 from django.db import models
 from django.utils import timezone
 
-# Create your models here.
+class Category(models.Model):
+	category_name = models.CharField('category name', max_length=50)
+
+	def __str__(self):
+		return self.category_name
+
 class Question(models.Model):
+	category = models.ForeignKey(Category, on_delete = models.CASCADE)
 	question_text = models.CharField('question text', max_length=200)
 	publish_date = models.DateTimeField('date published')
+	
 	
 	def __str__(self):
 		return self.question_text
