@@ -1,5 +1,6 @@
 import datetime
 
+from django.contrib.auth.models import User
 from django.db import models
 from django.utils import timezone
 
@@ -30,6 +31,15 @@ class Choice(models.Model):
 	def __str__(self):
 		return self.choice_text
 		
+class Quiz(models.Model):
 
+	category = models.ForeignKey(Category, on_delete = models.CASCADE)
+	owner = models.ForeignKey(User, on_delete = models.CASCADE)
+	#field for serialized value of question_list property
+	serialized_question_list = models.TextField
+	create_date = models.DateTimeField('date created')
 		
-		
+	#question_list = property(getQuestion_list, setgetQuestion_list, 
+	#							delgetQuestion_list, "Question list")
+
+	
