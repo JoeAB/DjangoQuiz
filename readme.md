@@ -4,7 +4,8 @@ tutorial project found at this link: https://docs.djangoproject.com/en/2.0/intro
 As of step 6, I've diverted and started turning this into my own project. Will be making a quizlet
 type application. General requirements are below.
 
-General Requirement 1: Users be able to create an account/sign into the application using the base user account system.
+General Requirement 1: Users be able to sign into the application using the base user account system. I don't plan on allowing
+account creation at this time, but rather accounts created in the management panel by me.
 
 General Requirement 2: There should be a home where it's possible to create a quiz, view old quizzes, or select to study individual
 questions.

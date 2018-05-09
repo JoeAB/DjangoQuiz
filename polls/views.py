@@ -1,3 +1,4 @@
+from django.contrib.auth import authenticate
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
@@ -6,8 +7,14 @@ from django.views import generic
 
 from .models import Category, Choice, Question
 
-class IndexView(generic.ListView):
-	template_name = 'polls/index.html'
+
+def index(request):
+
+	return render(request, 'polls/index.html')
+
+
+class CategoryListView(generic.ListView):
+	template_name = 'polls/category.html'
 	context_object_name = 'category_list'
 	
 	def get_queryset(self):
@@ -46,3 +53,19 @@ def vote(request, question_id):
 class ResultsView(generic.DetailView):
 	model = Question
 	template_name = 'polls/results.html'
+	
+def signOn(request):
+	userNameParam = request.POST.get("userName", "")
+	passwordParam = request.POST.get("password", "")
+	
+	user = authenticate(username=userNameParam, password=passwordParam)
+	
+	if user is not None:
+		return HttpResponseRedirect(reverse('polls:landing'))
+	else:
+		return render(request, 'polls/index.html', 
+		{'message': 'The username or password combination you have entered is incorrect.'})
+
+def landing(request):
+	return render(request, 'polls/landing.html')
+
