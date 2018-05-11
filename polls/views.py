@@ -1,4 +1,5 @@
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
@@ -12,6 +13,28 @@ def index(request):
 
 	return render(request, 'polls/index.html')
 
+def signOn(request):
+	userNameParam = request.POST.get("userName", "")
+	passwordParam = request.POST.get("password", "")
+	
+	user = authenticate(username=userNameParam, password=passwordParam)
+	
+	if user is not None:
+		login(request, user)
+		return HttpResponseRedirect(reverse('polls:landing'))
+	else:
+		return render(request, 'polls/index.html', 
+		{'message': 'The username or password combination you have entered is incorrect.'})
+
+@login_required
+def signout(request):
+	logout(request)
+	return render(request, 'polls/index.html', 
+		{'message': 'You have been logged out.'})
+
+@login_required
+def landing(request):
+	return render(request, 'polls/landing.html')
 
 class CategoryListView(generic.ListView):
 	template_name = 'polls/category.html'
@@ -19,7 +42,7 @@ class CategoryListView(generic.ListView):
 	
 	def get_queryset(self):
 		return Category.objects.order_by('category_name')
-
+		
 class QuestionListView(generic.ListView):
 	template_name = 'polls/questionList.html'
 	context_object_name = 'latest_question_list'
@@ -27,7 +50,8 @@ class QuestionListView(generic.ListView):
 	def get_queryset(self):
 		#get five most recent, but none in the future
 		return Question.objects.filter(publish_date__lte=timezone.now()).order_by('-publish_date')[:5]
-    
+ 
+
 class DetailView(generic.DetailView):
 	model = Question
 	template_name = 'polls/detail.html'
@@ -36,6 +60,7 @@ class DetailView(generic.DetailView):
 		#don't allow future questions here
 		return Question.objects.filter(publish_date__lte=timezone.now())
 		
+@login_required
 def vote(request, question_id):
 	question = get_object_or_404(Question, pk=question_id)
 	try:
@@ -53,19 +78,3 @@ def vote(request, question_id):
 class ResultsView(generic.DetailView):
 	model = Question
 	template_name = 'polls/results.html'
-	
-def signOn(request):
-	userNameParam = request.POST.get("userName", "")
-	passwordParam = request.POST.get("password", "")
-	
-	user = authenticate(username=userNameParam, password=passwordParam)
-	
-	if user is not None:
-		return HttpResponseRedirect(reverse('polls:landing'))
-	else:
-		return render(request, 'polls/index.html', 
-		{'message': 'The username or password combination you have entered is incorrect.'})
-
-def landing(request):
-	return render(request, 'polls/landing.html')
-

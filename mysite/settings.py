@@ -23,10 +23,12 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'px71=_mh)i!siywi^cluwj*=i-=8^94qoj8=&=-0j@@-$16=f1'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
+LOGIN_URL='/polls/'
+LOGIN_REDIRECT_URL='/polls/'
 
 # Application definition
 
